@@ -1,0 +1,25 @@
+.text-input {
+  height      : 50px;
+  font-size   : $font-size-large;
+  font-weight : 300;
+  margin-right: .6rem;
+}
+
+.text-area {
+  @extend .text-input;
+  display      : block;
+  font-size    : 1.25rem;
+  line-height  : 1.5;
+  font-weight  : 200;
+  height       : 20rem;
+  width        : 40rem;
+  overflow     : auto;
+  border       : 1px solid #cacccd;
+  border-radius: .25rem;
+  resize       : vertical
+}
+
+.input-group {
+  display       : flex;
+  flex-direction: row;
+}

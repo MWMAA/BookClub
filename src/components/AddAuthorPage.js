@@ -11,9 +11,15 @@ class AddAuthorPage extends Component {
   render() {
     return (
       <div>
-        <p>ADD AUTHOR Page</p>
-        <AuthorForm
-          onSubmit={this.onSubmit} />
+        <div className='page-header'>
+          <div className='content-container'>
+            <h1 className='page-header__title'>Add Author Page</h1>
+          </div>
+        </div>
+        <div className='content-container'>
+          <AuthorForm
+            onSubmit={this.onSubmit} />
+        </div>
       </div>
     );
   }

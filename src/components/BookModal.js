@@ -1,22 +1,23 @@
 import React from 'react';
 import Modal from 'react-modal';
-import { connect } from 'formik';
+import { Button, Link } from '@material-ui/core';
 
 const BookModal = (props) => (
   <Modal
-    isOpen={true}
+    isOpen={!!props.book}
     onRequestClose={props.handleClear}
-    contentLabel='Selected Option'
     closeTimeoutMS={200}
   >
-    
     <h3>Selected Option!</h3>
-    <p>props.book.name</p>
-  </Modal>
+    {props.book && (
+      <div>
+        <p> {props.book.name}</p>
+        <Link to={`/editbook/${props.book.id}`} >
+          <Button variant="contained" color="primary">Edit Book</Button>
+        </Link>
+      </div>)}
+
+  </Modal >
 )
 
-const mapStateToProps = (state, props) => ({
-  book: state.books.find((book) => book.id === props.match.params.id)
-});
-
-export default connect(mapStateToProps)(BookModal);
+export default BookModal;

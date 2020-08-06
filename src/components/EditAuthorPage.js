@@ -16,19 +16,26 @@ class EditAuthorPage extends Component {
   render() {
     return (
       <div>
-        <p>EDIT Author PAGE</p>
-        <AuthorForm
-          author={this.props.author}
-          onSubmit={this.onSubmit}
-        />
-        <Button
-          variant="outlined"
-          color="secondary"
-          onClick={this.onRemove}
-        >
-          Remove Author
+        <div className='page-header'>
+          <div className='content-container'>
+            <h1 className='page-header__title'>Edit Author Page</h1>
+          </div>
+        </div>
+        <div className='content-container'>
+          <AuthorForm
+            author={this.props.author}
+            onSubmit={this.onSubmit}
+          />
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={this.onRemove}
+            className='remove-btn'
+          >
+            Remove Author
         </Button>
-      </div>
+        </div>
+      </div >
     );
   }
 }

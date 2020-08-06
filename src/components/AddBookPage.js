@@ -11,9 +11,15 @@ class AddBookPage extends Component {
   render() {
     return (
       <div>
-        <p>ADD BOOK Page</p>
-        <BookForm
-          onSubmit={this.onSubmit} />
+        <div className='page-header'>
+          <div className='content-container'>
+            <h1 className='page-header__title'>Add Book Page</h1>
+          </div>
+        </div>
+        <div className='content-container'>
+          <BookForm
+            onSubmit={this.onSubmit} />
+        </div>
       </div>
     );
   }

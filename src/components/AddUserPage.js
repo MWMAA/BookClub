@@ -11,9 +11,15 @@ class AddUserPage extends Component {
   render() {
     return (
       <div>
-        <p>ADD USER Page</p>
-        <UserForm
-          onSubmit={this.onSubmit} />
+        <div className='page-header'>
+          <div className='content-container'>
+            <h1 className='page-header__title'>Add User Page</h1>
+          </div>
+        </div>
+        <div className='content-container'>
+          <UserForm
+            onSubmit={this.onSubmit} />
+        </div>
       </div>
     );
   }

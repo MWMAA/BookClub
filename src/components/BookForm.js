@@ -12,7 +12,7 @@ const BookForm = (props) => {
     avatar: props.book ? props.book.avatar : {},
     name: props.book ? props.book.name : '',
     author: props.book ? props.book.author : '',
-    ISBN: props.book ? props.book.ISBN : '',
+    ISBN: props.book ? props.book.ISBN : 1234567891234,
     rating: props.book ? props.book.rating : 0,
     available: props.book ? props.book.available : '',
     sold: props.book ? props.book.sold : 0,
@@ -28,10 +28,12 @@ const BookForm = (props) => {
   const validationSchema = Yup.object({
     name: Yup.string().required('This Field is Required!'),
     author: Yup.string().required('This Field is Required!'),
-    ISBN: Yup.number().required('This Field is Required!'),
+    ISBN: Yup.number()
+      .required('This Field is Required!')
+      .test('len', 'Must be exactly 13 characters', ISBN => ISBN.toString(10).length === 13),
     description: Yup.string().required('This Field is Required!'),
     rating: Yup.number().min(0).max(5),
-    available: Yup.number().min(0),
+    available: Yup.number().min(0).required('This Field is Required!'),
     sold: Yup.number().min(0),
     price: Yup.number().required('This Field is Required!').min(0),
     pages: Yup.number().required('This Field is Required!').min(0),
@@ -55,81 +57,110 @@ const BookForm = (props) => {
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <Formik
+        className='form'
         initialValues={initialValues}
         validationSchema={validationSchema}
-        onSubmit={onSubmit} >
-        {(formProps) => (
+        onSubmit={onSubmit}
+        validateOnMount >
+        {(formik) => (
           <Form>
-            <Field
-              component={TextField}
-              name="name"
-              type="name"
-              label="BookName"
-            />
-            <Field
-              component={TextField}
-              name="author"
-              type="name"
-              label="Author"
-            />
-            <Field
-              component={TextField}
-              name="ISBN"
-              type="number"
-              label="ISBN"
-            />
-            <Field
-              component={TextField}
-              name="available"
-              type="number"
-              label="Available at store"
-            />
-            <Field
-              component={TextField}
-              name="price"
-              type="number"
-              label="Price"
-            />
-            <Field
-              component={TextField}
-              name="pages"
-              type="number"
-              label="Pages"
-            />
-            <Field
-              component={TextField}
-              name="edition"
-              type="number"
-              label="Edition"
-            />
-            <Field
-              name="dateOfPublication"
-              component={KeyboardDatePicker}
-              disableToolbar
-              variant="inline"
-              format="dd/MM/yyyy"
-              label="Publication date"
-              value={initialValues.dateOfPublication}
-              onChange={onDateChange}
-            />
-            <label>Description</label>
+            <div className='input-group'>
+              <div className='text-input'>
+                <Field
+                  component={TextField}
+                  name="name"
+                  type="name"
+                  label="BookName"
+                />
+              </div>
+              <div className='text-input'>
+                <Field
+                  name="dateOfPublication"
+                  component={KeyboardDatePicker}
+                  disableToolbar
+                  variant="inline"
+                  format="dd/MM/yyyy"
+                  label="Publication date"
+                  value={initialValues.dateOfPublication}
+                  onChange={onDateChange}
+                />
+              </div>
+              <div className='text-input'>
+                <Field
+                  component={TextField}
+                  name="ISBN"
+                  type="number"
+                  label="ISBN"
+                />
+              </div>
+            </div>
+            <div className='input-group'>
+              <div className='text-input'>
+                <Field
+                  component={TextField}
+                  name="author"
+                  type="name"
+                  label="Author"
+                />
+              </div>
+              <div className='text-input'>
+                <Field
+                  component={TextField}
+                  name="available"
+                  type="number"
+                  label="Available at store"
+                />
+              </div>
+            </div>
+            <div className='input-group'>
+              <div className='text-input'>
+                <Field
+                  component={TextField}
+                  name="price"
+                  type="number"
+                  label="Price"
+                />
+              </div>
+              <div className='text-input'>
+                <Field
+                  component={TextField}
+                  name="pages"
+                  type="number"
+                  label="Pages"
+                />
+              </div>
+              <div className='text-input'>
+                <Field
+                  component={TextField}
+                  name="edition"
+                  type="number"
+                  label="Edition"
+                />
+              </div>
+            </div>
+            <h3 className='label'>Description</h3>
             <Field
               name="description"
               component='textarea'
               label="Description"
+              className='text-area'
             />
-            <ErrorMessage name="description" />
+            <div className='error-message'>
+              <ErrorMessage name="description" />
+            </div>
             <input
               type='file'
               name='avatar'
               onChange={(e) => {
-                formProps.setFieldValue('avatar', e.target.files[0])
+                formik.setFieldValue('avatar', e.target.files[0])
               }}
             />
             <Button
+              variant="contained"
+              color="primary"
               type="submit"
               size="large"
-              disabled={!(formProps.isValid && formProps.dirty) || formProps.isSubmitting}>
+              disabled={!(formik.isValid && formik.dirty) || formik.isSubmitting}>
               Submit
               </Button>
           </Form>

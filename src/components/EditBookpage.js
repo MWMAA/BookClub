@@ -16,18 +16,24 @@ class EditBookpage extends Component {
   render() {
     return (
       <div>
-        <p>EDIT BOOK PAGE</p>
-        <BookForm
-          book={this.props.book}
-          onSubmit={this.onSubmit}
-        />
-        <Button
-          variant="outlined"
-          color="secondary"
-          onClick={this.onRemove}
-        >
-          Remove book
+        <div className='page-header'>
+          <div className='content-container'>
+            <h1 className='page-header__title'>Edit Book Page</h1>
+          </div>
+        </div>
+        <div className='content-container'>
+          <BookForm
+            book={this.props.book}
+            onSubmit={this.onSubmit}
+          />
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={this.onRemove}
+          >
+            Remove book
         </Button>
+        </div>
       </div>
     );
   }

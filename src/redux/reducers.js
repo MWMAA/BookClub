@@ -1,5 +1,84 @@
+import { v4 as uuidv4 } from 'uuid';
+
 // Book Reducer
-const bookReducerDefaultState = []
+const bookReducerDefaultState = [{
+  id: uuidv4(),
+  name: 'Lord of the rings',
+  author: 'J.R.R.Tolkiens',
+  available: 2,
+  sold: 30,
+  description: 'i am starta',
+  price: 50,
+  pages: 15,
+  edition: 1,
+  dateOfPublication: new Date('2014-08-18')
+}, {
+  id: uuidv4(),
+  name: 'he was',
+  author: 'starta',
+  available: 2,
+  sold: 30,
+  description: 'i am starta',
+  price: 50,
+  pages: 15,
+  edition: 1,
+  dateOfPublication: new Date('2014-08-18')
+}, {
+  id: uuidv4(),
+  name: 'he was',
+  author: 'starta',
+  available: 2,
+  sold: 30,
+  description: 'i am starta',
+  price: 50,
+  pages: 15,
+  edition: 1,
+  dateOfPublication: new Date('2014-08-18')
+}, {
+  id: uuidv4(),
+  name: 'he was',
+  author: 'starta',
+  available: 2,
+  sold: 30,
+  description: 'i am starta',
+  price: 50,
+  pages: 15,
+  edition: 1,
+  dateOfPublication: new Date('2014-08-18')
+}, {
+  id: uuidv4(),
+  name: 'he was',
+  author: 'starta',
+  available: 2,
+  sold: 30,
+  description: 'i am starta',
+  price: 50,
+  pages: 15,
+  edition: 1,
+  dateOfPublication: new Date('2014-08-18')
+}, {
+  id: uuidv4(),
+  name: 'he was',
+  author: 'starta',
+  available: 2,
+  sold: 30,
+  description: 'i am starta',
+  price: 50,
+  pages: 15,
+  edition: 1,
+  dateOfPublication: new Date('2014-08-18')
+}, {
+  id: uuidv4(),
+  name: 'he was',
+  author: 'starta',
+  available: 2,
+  sold: 30,
+  description: 'i am starta',
+  price: 50,
+  pages: 15,
+  edition: 1,
+  dateOfPublication: new Date('2014-08-18')
+}]
 
 export const bookReducer = (state = bookReducerDefaultState, action) => {
   switch (action.type) {
@@ -53,7 +132,87 @@ export const userReducer = (state = userReducerDefaultState, action) => {
 }
 
 // Author Reducer
-const AuthorReducerDefaultState = []
+const AuthorReducerDefaultState = [
+  {
+    id: uuidv4(),
+    name: 'Szeth',
+    email: 'szeth@gmail.com',
+    country: 'shin',
+    city: 'shinovar',
+    dateOfBirth: '2014-08-18T00:00:00.000Z',
+    books: [
+      {
+        name: 'honnor blade',
+        genre: 'wind blade'
+      }
+    ]
+  }, {
+    id: uuidv4(),
+    name: 'Szeth',
+    email: 'szeth@gmail.com',
+    country: 'shin',
+    city: 'shinovar',
+    dateOfBirth: '2014-08-18T00:00:00.000Z',
+    books: [
+      {
+        name: 'honnor blade',
+        genre: 'wind blade'
+      }
+    ]
+  }, {
+    id: uuidv4(),
+    name: 'Sarah J. Mass',
+    email: 'szeth@gmail.com',
+    country: 'shin',
+    city: 'shinovar',
+    dateOfBirth: '2014-08-18T00:00:00.000Z',
+    books: [
+      {
+        name: 'honnor blade',
+        genre: 'wind blade'
+      }
+    ]
+  }, {
+    id: uuidv4(),
+    name: 'Robert jordan',
+    email: 'szeth@gmail.com',
+    country: 'shin',
+    city: 'shinovar',
+    dateOfBirth: '2014-08-18T00:00:00.000Z',
+    books: [
+      {
+        name: 'honnor blade',
+        genre: 'wind blade'
+      }
+    ]
+  }, {
+    id: uuidv4(),
+    name: 'Brandon sanderson',
+    email: 'szeth@gmail.com',
+    country: 'shin',
+    city: 'shinovar',
+    dateOfBirth: '2014-08-18T00:00:00.000Z',
+    books: [
+      {
+        name: 'honnor blade',
+        genre: 'wind blade'
+      }
+    ]
+  }, {
+    id: uuidv4(),
+    name: 'Brandon sanderson',
+    email: 'szeth@gmail.com',
+    country: 'shin',
+    city: 'shinovar',
+    dateOfBirth: '2014-08-18T00:00:00.000Z',
+    books: [
+      {
+        name: 'honnor blade',
+        genre: 'wind blade'
+      }
+    ]
+  }
+]
 
 export const authorReducer = (state = AuthorReducerDefaultState, action) => {
   switch (action.type) {

@@ -25,8 +25,8 @@ const AuthorForm = (props) => {
     country: Yup.string(),
     city: Yup.string(),
     books: Yup.array().of(Yup.object().shape({
-      name: Yup.string().required('Please add a BookName'),
-      genre: Yup.string().required('Please add a genre')
+      name: Yup.string().required("You must enter at least 1 book name and it's genre"),
+      genre: Yup.string().required("You must enter at least 1 book name and it's genre")
     })),
     dateOfBirth: Yup.date().max(new Date())
   })
@@ -44,83 +44,116 @@ const AuthorForm = (props) => {
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <Formik
+        className='form'
         initialValues={initialValues}
         validationSchema={validationSchema}
-        onSubmit={onSubmit} >
-        <Form>
-          <Field
-            component={TextField}
-            name="name"
-            type="name"
-            label="UserName"
-          />
-          <Field
-            component={TextField}
-            name="email"
-            type="email"
-            label="E-mail"
-          />
-          <label>Address</label>
-          <Field
-            component={TextField}
-            name="country"
-            type="text"
-            label="Country"
-          />
-          <Field
-            component={TextField}
-            name="city"
-            type="text"
-            label="City"
-          />
-          <Field
-            name="dateOfBirth"
-            component={KeyboardDatePicker}
-            disableToolbar
-            variant="inline"
-            format="dd/MM/yyyy"
-            label="Date of birth"
-            value={initialValues.dateOfBirth}
-            onChange={onDateChange}
-          />
+        onSubmit={onSubmit}
+        validateOnMount
+      >
+        {(formik) => (<Form>
+          <div className='input-group'>
+            <div className='text-input'>
+              <Field
+                component={TextField}
+                name="name"
+                type="name"
+                label="AuthorName"
+              />
+            </div>
+            <div className='text-input'>
+              <Field
+                name="dateOfBirth"
+                component={KeyboardDatePicker}
+                disableToolbar
+                variant="inline"
+                format="dd/MM/yyyy"
+                label="Date of birth"
+                value={initialValues.dateOfBirth}
+                onChange={onDateChange}
+              />
+            </div>
+          </div>
+          <div className='text-input'>
+            <Field
+              component={TextField}
+              name="email"
+              type="email"
+              label="E-mail"
+            />
+          </div>
+          <h3 className='Address-label'>Place of Origin</h3>
+          <div className='input-group'>
+            <div className='text-input'>
+              <Field
+                component={TextField}
+                name="country"
+                type="text"
+                label="Country"
+              />
+            </div>
+            <div className='text-input'>
+              <Field
+                component={TextField}
+                name="city"
+                type="text"
+                label="City"
+              />
+            </div>
+          </div>
+          <h3 className='label'>Bibliography</h3>
           <FieldArray name='books'>
             {arrayHelpers => (
               <div>
                 {arrayHelpers.form.values.books.map((book, index) => (
                   <div key={index}>
-                    <Field
-                      name={`books[${index}.name]`}
-                      component={TextField}
-                      label="Book name"
-                    />
-                    <Field
-                      name={`books[${index}.genre]`}
-                      component={TextField}
-                      label="Genre"
-                    />
-                    {index > 0 && (
-                      <Button
-                        size='small'
-                        variant="outlined"
-                        color="secondary"
-                        type='button'
-                        onClick={() => arrayHelpers.remove(index)}>
-                        Remove Book
-                      </Button>
-                    )}
+                    <div className='input-group'>
+                      <div className='text-input' >
+                        <Field
+                          name={`books[${index}.name]`}
+                          component={TextField}
+                          label="Book name"
+                        />
+                      </div>
+                      <div className='text-input' >
+                        <Field
+                          name={`books[${index}.genre]`}
+                          component={TextField}
+                          label="Genre"
+                        />
+                      </div>
+                      {index > 0 && (
+                        <div className='genre-btn'>
+                          <Button
+                            size='small'
+                            variant="outlined"
+                            color="secondary"
+                            type='button'
+                            onClick={() => arrayHelpers.remove(index)}>
+                            Remove Book
+                        </Button>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 ))}
                 <Button
                   type='button'
                   onClick={() => arrayHelpers.push({ name: '', genre: '' })}>
-                  ADD Another book
+                  Add Another book
                 </Button>
               </div>
             )
             }
           </FieldArray>
-          <Button type="submit" size="large">Submit</Button>
-        </Form>
+          <Button
+            variant="contained"
+            color="primary"
+            type="submit"
+            size="large"
+            disabled={!formik.isValid || formik.isSubmitting}>
+            Submit
+            </Button>
+        </Form>)}
       </Formik >
     </MuiPickersUtilsProvider>
   );

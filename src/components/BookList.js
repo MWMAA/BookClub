@@ -1,8 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import BookListItem from './BookListItem';
-
-
+import BookModal from './BookModal';
 
 class BookList extends React.Component {
   state = {
@@ -20,23 +19,26 @@ class BookList extends React.Component {
   }
   render() {
     return (
-      <div>
+      <div className='content-container_book_list'>
         {
           this.props.books.length === 0 ? (
-            <div>
-              <p>No books currently available</p>
+            <div className='content-container'>
+              <h3 className='none_available'>No books currently available</h3>
             </div>
           ) : (
               this.props.books.map((book) => (
                 <BookListItem
                   key={book.id}
                   book={book}
-                  handleClear={this.handleClear}
                   handleChoose={this.handleChoose}
                 />
               ))
             )
         }
+        <BookModal
+          book={this.state.SelectedBook}
+          handleClear={this.handleClear}
+        />
       </div >
     );
   }

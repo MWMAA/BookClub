@@ -10,6 +10,7 @@ import AddBookPage from '../components/AddBookPage';
 import DashBoard from '../components/DashBoard';
 import NotFoundPage from '../components/NotFoundPage';
 import BookList from '../components/BookList';
+import AuthorList from '../components/AuthorList';
 
 export const history = createBrowserHistory();
 
@@ -25,6 +26,7 @@ const AppRouter = () => (
         <Route path="/bookList" component={BookList} />
         <Route path="/createAuthor" component={AddAuthorPage} />
         <Route path="/editAuthor/:id" component={EditAuthorPage} />
+        <Route path="/authorlist" component={AuthorList} />
         <Route component={NotFoundPage} />
       </Switch>
     </div>
