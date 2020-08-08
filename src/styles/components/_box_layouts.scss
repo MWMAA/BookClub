@@ -7,4 +7,8 @@
   @extend .box-layout;
   background     : url('/images/book1.jpg');
   background-size: cover;
+  position: absolute;
+  left    : 0;
+  right   : 0;
+  bottom  : 0;
 }

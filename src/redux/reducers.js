@@ -14,7 +14,7 @@ const bookReducerDefaultState = [{
   dateOfPublication: new Date('2014-08-18')
 }, {
   id: uuidv4(),
-  name: 'he was',
+  name: 'Lord of the rings',
   author: 'starta',
   available: 2,
   sold: 30,
@@ -25,7 +25,7 @@ const bookReducerDefaultState = [{
   dateOfPublication: new Date('2014-08-18')
 }, {
   id: uuidv4(),
-  name: 'he was',
+  name: 'Lord of the rings',
   author: 'starta',
   available: 2,
   sold: 30,

@@ -6,7 +6,7 @@ import BookForm from './BookForm';
 class AddBookPage extends Component {
   onSubmit = (book) => {
     this.props.addBook(book);
-    this.props.history.push('/');
+    this.props.history.push('/bookList');
   }
   render() {
     return (

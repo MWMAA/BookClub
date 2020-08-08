@@ -7,11 +7,11 @@ import { Button } from '@material-ui/core';
 class EditBookpage extends Component {
   onSubmit = (book) => {
     this.props.editBook(this.props.book.id, book);
-    this.props.history.push('/');
+    this.props.history.push('/bookList');
   };
   onRemove = () => {
     this.props.removeBook({ id: this.props.book.id });
-    this.props.history.push('/');
+    this.props.history.push('/bookList');
   };
   render() {
     return (

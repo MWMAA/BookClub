@@ -3,7 +3,7 @@ $font-size-large: 1.8rem;
 $font-size-small:1.4rem;
 
 // Spacing
-$s-size            : 1.2rem;
+$s-size            : .75rem;
 $m-size            : 1.6rem;
 $l-size            : 3.2rem;
 $xl-size           : 4.8rem;
@@ -16,3 +16,5 @@ $grey        : #666;
 $light_blue  : #1c88bf;
 $dark_blue   : #364051;
 $off-white   :#f7f7f7;
+
+$col: minmax(auto, 20%);

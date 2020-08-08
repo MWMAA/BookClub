@@ -7,15 +7,15 @@ import { Button } from '@material-ui/core';
 class EditAuthorPage extends Component {
   onSubmit = (author) => {
     this.props.editAuthor(this.props.author.id, author);
-    this.props.history.push('/');
+    this.props.history.push('/authorList');
   };
   onRemove = () => {
     this.props.removeAuthor({ id: this.props.author.id });
-    this.props.history.push('/');
+    this.props.history.push('/authorList');
   };
   render() {
     return (
-      <div>
+      <div className='form-container'>
         <div className='page-header'>
           <div className='content-container'>
             <h1 className='page-header__title'>Edit Author Page</h1>

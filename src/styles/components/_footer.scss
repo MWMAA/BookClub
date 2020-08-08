@@ -1,0 +1,18 @@
+.footer_main {
+  position        : absolute;
+  left            : 0;
+  right           : 0;
+  bottom          : 0;
+  background-color: #2f333d;
+  border-top      : 1px #494f5c solid;
+
+  h3 {
+    margin: 0;
+    color : white;
+  }
+
+  p {
+    @extend h3;
+    font-size: 12px;
+  }
+}

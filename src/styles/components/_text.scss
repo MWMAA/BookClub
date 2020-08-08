@@ -14,17 +14,18 @@
 }
 
 .search_helpful_text_up {
-  position   : relative;
-  bottom     : -270px;
   color      : $dark-grey;
   font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  padding    : 0 0 0 1.3rem;
+  margin     : 5px 0 0 0;
 }
 
 .search_helpful_text_btm {
-  position      : relative;
-  right         : -20px;
-  color         : $dark-grey;
-  // font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  color      : $dark-grey;
+  margin     : 3px 0 0 0;
+  padding    : 0 0 0 1.3rem;
+  // text-align : left;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
 }
 
 .none_available {

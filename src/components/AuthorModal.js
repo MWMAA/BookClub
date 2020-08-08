@@ -1,5 +1,7 @@
 import React from 'react';
 import Modal from 'react-modal';
+import { Button } from '@material-ui/core';
+import { Link } from 'react-router-dom';
 
 const BookModal = (props) => (
   <Modal
@@ -7,9 +9,15 @@ const BookModal = (props) => (
     onRequestClose={props.handleClear}
     closeTimeoutMS={200}
   >
-    <h3>Selected Option!</h3>
-    {props.author && <p> {props.author.name}</p>}
-  </Modal >
+    {props.author && (
+      <div>
+        <p> {props.author.name}</p>
+        <Link to={`/editAuthor/${props.author.id}`} >
+          <Button variant="contained" color="primary">Edit Author</Button>
+        </Link>
+      </div>
+    )}
+  </Modal>
 )
 
 export default BookModal;

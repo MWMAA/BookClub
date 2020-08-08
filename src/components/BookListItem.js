@@ -22,7 +22,7 @@ const BookListItem = (props) => {
           </CardContent>
         </CardActionArea>
       </Card>
-    </Link >
+    </Link>
   );
 }
 
