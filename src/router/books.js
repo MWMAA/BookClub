@@ -1,6 +1,35 @@
 const express = require('express')
-const router = express()
+const multer = require('multer')
+const sharp = require('sharp')
 const { v4: uuidv4 } = require('uuid');
+
+const router = express()
+
+const avatar = multer({
+  limits: {
+    fileSize: 1000000
+  },
+  fileFilter(req, file, cb) {
+    if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+      return cb(new Error('please insert a picture'))
+    }
+
+    cb(undefined, true)
+  }
+})
+
+const book = multer({
+  limits: {
+    fileSize: 10000000
+  },
+  fileFilter(req, file, cb) {
+    if (!file.originalname.match(/\.(pdf|epub|mobi|pdb|azw)$/)) {
+      return cb(new Error('please insert a picture'))
+    }
+
+    cb(undefined, true)
+  }
+})
 
 const books = [{
   id: 1,
@@ -82,6 +111,26 @@ router.delete('/removeBook', (req, res) => {
   } catch (e) {
     res.status(500).send(e)
   }
+})
+
+router.post('/bookCoverUpload', avatar.single('bookCover'), async (req, res) => {
+  const buffer = await sharp(req.file.buffer).resize({ width: 250, height: 250 }).png().toBuffer()
+  req.avatar = buffer
+  res.status(200).send(req.avatar)
+}, (error, req, res, next) => {
+  res.status(400).send({ error: error.message })
+})
+
+router.post('/bookUpload', book.single('book'), async (req, res) => {
+  const buffer = await sharp(req.file.buffer).toBuffer()
+  req.avatar = buffer
+  res.status(200).send(req.avatar)
+}, (error, req, res, next) => {
+  res.status(400).send({ error: error.message })
+})
+
+router.get('/downloadBook', () => {
+
 })
 
 module.exports = router

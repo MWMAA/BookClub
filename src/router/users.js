@@ -1,6 +1,22 @@
 const express = require('express')
-const router = express()
+const multer = require('multer')
+const sharp = require('sharp')
 const { v4: uuidv4 } = require('uuid');
+
+const router = express()
+
+const avatar = multer({
+  limits: {
+    fileSize: 1000000
+  },
+  fileFilter(req, file, cb) {
+    if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+      return cb(new Error('please insert a picture'))
+    }
+
+    cb(undefined, true)
+  }
+})
 
 const users = [{
   id: 1,
@@ -82,6 +98,15 @@ router.delete('/removeUser', (req, res) => {
   } catch (e) {
     res.status(500).send(e)
   }
+})
+
+router.post('/userAvatarUpload', avatar.single('avatar'), async (req, res) => {
+  const buffer = await sharp(req.file.buffer).resize({ width: 250, height: 250 }).png().toBuffer()
+  req.avatar = buffer
+  // await req.user.save()
+  res.status(200).send(req.avatar)
+}, (error, req, res, next) => {
+  res.status(400).send({ error: error.message })
 })
 
 module.exports = router
