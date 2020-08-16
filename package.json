@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "./node_modules/.bin/env-cmd -f ./config/dev.env nodemon src/index.js",
+    "start": "nodemon src/index.js"
   },
   "keywords": [],
   "author": "",
@@ -14,13 +14,16 @@
     "@sendgrid/mail": "^7.2.3",
     "bcryptjs": "^2.4.3",
     "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
     "mongodb": "^3.6.0",
     "mongoose": "^5.9.28",
     "multer": "^1.4.2",
     "sharp": "^0.25.4",
-    "uuid": "^8.3.0"
+    "uuid": "^8.3.0",
+    "validator": "^13.1.1"
   },
   "devDependencies": {
+    "env-cmd": "^10.1.0",
     "jest": "^26.2.2",
     "nodemon": "^2.0.4"
   }

@@ -1,7 +1,7 @@
 const express = require('express')
 const multer = require('multer')
 const sharp = require('sharp')
-const { v4: uuidv4 } = require('uuid');
+const Book = require('../models/books')
 
 const router = express()
 
@@ -18,7 +18,7 @@ const avatar = multer({
   }
 })
 
-const book = multer({
+const bookFile = multer({
   limits: {
     fileSize: 10000000
   },
@@ -31,27 +31,10 @@ const book = multer({
   }
 })
 
-const books = [{
-  id: 1,
-  name: 'hawweeee'
-}, {
-  id: 2,
-  name: 'hoolie'
-}, {
-  id: 3,
-  name: 'hawdini'
-}, {
-  id: 4,
-  name: 'lenoard'
-}]
-
-router.get('/readbook', (req, res) => {
+router.get('/readbook/:id', async (req, res) => {
+  const _id = req.params.id
   try {
-    const book = books.find((book) => {
-      if (book.id === req.body.id) {
-        return book;
-      }
-    })
+    const book = await Book.findById(_id)
 
     if (!book) {
       res.status(404).send()
@@ -63,7 +46,7 @@ router.get('/readbook', (req, res) => {
   }
 })
 
-router.get('/readbooks', (req, res) => {
+router.get('/readbooks', async (req, res) => {
   try {
     res.status(200).send(books)
   } catch (e) {
@@ -71,43 +54,62 @@ router.get('/readbooks', (req, res) => {
   }
 })
 
-router.post('/createBook', (req, res) => {
+router.post('/createBook', async (req, res) => {
   try {
-    const book = {
-      id: uuidv4(),
-      ...req.body
+    const book = new Book({ ...req.body })
+    await book.save()
+    res.status(200).send(book)
+  } catch (e) {
+    res.status(500).send(e)
+  }
+})
+
+router.patch('/editBook', async (req, res) => {
+  const _id = req.params.id
+  const update = Object.keys(req.body)
+  const allowedUpdats = [
+    "name",
+    "author",
+    "ISBN",
+    "available",
+    "sold",
+    "description",
+    "price",
+    "pages",
+    "edition",
+    "dateOfPublication"
+  ]
+
+  const isValidOperation = update.every((update) => allowedUpdats.includes(update))
+
+  if (!isValidOperation) {
+    return res.status(400).send({ error: "Invalid Updates!" })
+  }
+
+  try {
+    const book = await Book.findByIdAndUpdate(_id, req.body, { new: true, runValidators: true })
+
+    if (!book) {
+      return res.status(404).send()
     }
 
-    books.push(book)
-    res.status(200).send(books)
+    res.status(200).send(book)
   } catch (e) {
     res.status(500).send(e)
   }
 })
 
-router.patch('/editBook', (req, res) => {
-  try {
-    const out = books.map((book) => {
-      if (book.id == req.body.id) {
-        return {
-          ...book,
-          ...req.body
-        }
-      } else {
-        return book
-      }
-    })
-    res.status(200).send(out)
-  } catch (e) {
-    res.status(500).send(e)
-  }
-})
+router.delete('/removeBook/:id', async (req, res) => {
+  const _id = req.params.id
 
-router.delete('/removeBook', (req, res) => {
   try {
-    const out = books.filter((book) => book.id !== req.body.id)
+    const book = await Book.findByIdAndDelete(_id)
 
-    res.status(200).send(out)
+    if (!book) {
+      return res.status(404).send()
+    }
+
+    res.status(200).send(book)
   } catch (e) {
     res.status(500).send(e)
   }
@@ -121,16 +123,16 @@ router.post('/bookCoverUpload', avatar.single('bookCover'), async (req, res) => 
   res.status(400).send({ error: error.message })
 })
 
-router.post('/bookUpload', book.single('book'), async (req, res) => {
-  const buffer = await sharp(req.file.buffer).toBuffer()
-  req.avatar = buffer
-  res.status(200).send(req.avatar)
-}, (error, req, res, next) => {
-  res.status(400).send({ error: error.message })
-})
+// router.post('/bookUpload', book.single('book'), async (req, res) => {
+//   const buffer = await sharp(req.file.buffer).toBuffer()
+//   req.avatar = buffer
+//   res.status(200).send(req.avatar)
+// }, (error, req, res, next) => {
+//   res.status(400).send({ error: error.message })
+// })
 
-router.get('/downloadBook', () => {
+// router.get('/downloadBook', () => {
 
-})
+// })
 
 module.exports = router

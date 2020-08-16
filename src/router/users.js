@@ -1,7 +1,7 @@
 const express = require('express')
 const multer = require('multer')
 const sharp = require('sharp')
-const { v4: uuidv4 } = require('uuid');
+const User = require('../models/users')
 
 const router = express()
 
@@ -18,27 +18,30 @@ const avatar = multer({
   }
 })
 
-const users = [{
-  id: 1,
-  name: 'hawweeee'
-}, {
-  id: 2,
-  name: 'hoolie'
-}, {
-  id: 3,
-  name: 'hawdini'
-}, {
-  id: 4,
-  name: 'lenoard'
-}]
-
-router.get('/readUser', (req, res) => {
+router.post('/createUser', async (req, res) => {
   try {
-    const user = users.find((user) => {
-      if (user.id === req.body.id) {
-        return user;
-      }
-    })
+    const user = new User({ ...req.body })
+
+    await user.save()
+    res.status(200).send(user)
+  } catch (e) {
+    res.status(500).send(e)
+  }
+})
+
+router.post('/users/login', async (req, res) => {
+  try {
+    const user = await User.findByCredentials(req.body.email, req.body.password)
+    res.status(200).send(user)
+  } catch (e) {
+    res.status(400).send(e)
+  }
+})
+
+router.get('/readUser/:id', async (req, res) => {
+  const _id = req.params.id
+  try {
+    const user = await User.findById(_id)
 
     if (!user) {
       res.status(404).send()
@@ -50,51 +53,61 @@ router.get('/readUser', (req, res) => {
   }
 })
 
-router.get('/readUsers', (req, res) => {
+router.get('/readUsers', async (req, res) => {
   try {
-    res.status(200).send(users)
+    const users = await User.find()
+
+    res.status(200)
   } catch (e) {
     res.status(500).send(e)
   }
 })
 
-router.post('/createUser', (req, res) => {
+router.patch('/editUser/:id', async (req, res) => {
+  const _id = req.params.id
+  const updates = Object.keys(req.body)
+  const allowedUpdats = [
+    "name",
+    "password",
+    "email",
+    "country",
+    "city",
+    "district",
+    "street",
+    "dateOfBirth"
+  ]
+
+  const isValidOperation = updates.every((update) => allowedUpdats.includes(update))
+
+  if (!isValidOperation) {
+    return res.status(400).send({ error: "Invalid Updates!" })
+  }
+
   try {
-    const user = {
-      id: uuidv4(),
-      ...req.body
+    const user = await User.findById(_id)
+    updates.forEach((update) => user[update] = req.body[update])
+    await user.save()
+
+    if (!user) {
+      return res.status(404).send()
     }
 
-    users.push(user)
-    res.status(200).send(users)
+    res.status(200).send(user)
   } catch (e) {
     res.status(500).send(e)
   }
 })
 
-router.patch('/editUser', (req, res) => {
+router.delete('/removeUser/:id', async (req, res) => {
+  const _id = req.params.id
   try {
-    const out = users.map((user) => {
-      if (user.id == req.body.id) {
-        return {
-          ...user,
-          ...req.body
-        }
-      } else {
-        return user
-      }
-    })
-    res.status(200).send(out)
-  } catch (e) {
-    res.status(500).send(e)
-  }
-})
+    const user = await User.findByIdAndDelete(_id)
 
-router.delete('/removeUser', (req, res) => {
-  try {
-    const out = users.filter((user) => user.id !== req.body.id)
+    if (!user) {
+      res.status(404).send()
+    }
 
-    res.status(200).send(out)
+    res.status(200).send(user)
   } catch (e) {
     res.status(500).send(e)
   }

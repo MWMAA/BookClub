@@ -1,10 +1,11 @@
 const express = require('express')
-const app = express()
+require('./db/mongoose')
 const port = process.env.PORT || 3001
 const bookRouter = require('./router/books')
 const authorRouter = require('./router/author')
 const userRouter = require('./router/users')
 
+const app = express()
 
 app.use(express.json())
 app.use(bookRouter)
