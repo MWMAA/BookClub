@@ -2,6 +2,7 @@ const express = require('express')
 const multer = require('multer')
 const sharp = require('sharp')
 const User = require('../models/users')
+const auth = require('../middleware/auth')
 
 const router = express()
 
@@ -21,9 +22,9 @@ const avatar = multer({
 router.post('/createUser', async (req, res) => {
   try {
     const user = new User({ ...req.body })
-
+    const token = await user.generateAuthToken()
     await user.save()
-    res.status(200).send(user)
+    res.status(200).send({ user, token })
   } catch (e) {
     res.status(500).send(e)
   }
@@ -32,13 +33,38 @@ router.post('/createUser', async (req, res) => {
 router.post('/users/login', async (req, res) => {
   try {
     const user = await User.findByCredentials(req.body.email, req.body.password)
-    res.status(200).send(user)
+    const token = await user.generateAuthToken()
+    res.status(200).send({ user, token })
   } catch (e) {
     res.status(400).send(e)
   }
 })
 
-router.get('/readUser/:id', async (req, res) => {
+router.post('/users/logout', auth, async (req, res) => {
+  try {
+    req.user.tokens = req.user.tokens.filter((token) => {
+      return token.token !== req.token
+    })
+
+    await req.user.save()
+    res.send()
+  } catch (e) {
+    res.status(500).send(e)
+  }
+})
+
+router.post('/users/logoutAll', auth, async (req, res) => {
+  try {
+    req.user.tokens = []
+
+    await req.user.save()
+    res.send()
+  } catch (e) {
+    res.status(500).send()
+  }
+})
+
+router.get('/readUser/:id', auth, async (req, res) => {
   const _id = req.params.id
   try {
     const user = await User.findById(_id)
@@ -51,6 +77,10 @@ router.get('/readUser/:id', async (req, res) => {
   } catch (e) {
     res.status(500).send(e)
   }
+})
+
+router.get('/Users/me', auth, async (req, res) => {
+  res.status(200).send(req.user)
 })
 
 router.get('/readUsers', async (req, res) => {
