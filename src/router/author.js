@@ -18,7 +18,7 @@ const avatar = multer({
   }
 })
 
-router.post('/createAuthor', async (req, res) => {
+router.post('/author', async (req, res) => {
   const author = new Author({ ...req.body })
 
   try {
@@ -29,25 +29,27 @@ router.post('/createAuthor', async (req, res) => {
   }
 })
 
-router.get('/readAuthor/:id', async (req, res) => {
-  const _id = req.params.id
-
+router.get('/author', async (req, res) => {
   try {
-    const author = await Author.findById(_id)
+    const sort = {}
+    const match = {}
 
-    if (!author) {
-      res.status(404).send()
+    if (req.body) {
+      Object.assign(match, req.body)
     }
 
-    res.status(200).send(author)
-  } catch (e) {
-    res.status(500).send(e)
-  }
-})
+    if (req.query.sortBy) {
+      const parts = req.query.sortBy.split(':')
+      sort[parts[0]] = parts[1] === 'desc' ? -1 : 1
+    }
 
-router.get('/readAuthors', async (req, res) => {
-  try {
-    const authors = await Author.find()
+    const authors = await Author.find(match,
+      {},
+      {
+        limit: parseInt(req.query.limit),
+        skip: parseInt(req.query.skip),
+        sort
+      })
 
     res.status(200).send(authors)
   } catch (e) {
@@ -55,7 +57,7 @@ router.get('/readAuthors', async (req, res) => {
   }
 })
 
-router.patch('/editAuthor/:id', async (req, res) => {
+router.patch('/author/:id', async (req, res) => {
   const _id = req.params.id
   const update = Object.keys(req.body)
   const allowedUpdats = [
@@ -85,7 +87,7 @@ router.patch('/editAuthor/:id', async (req, res) => {
   }
 })
 
-router.delete('/removeAuthor/:id', async (req, res) => {
+router.delete('/author/:id', async (req, res) => {
   const _id = req.params.id
 
   try {
@@ -108,6 +110,22 @@ router.delete('/removeAuthor/:id', async (req, res) => {
 //   res.status(200).send(req.avatar)
 // }, (error, req, res, next) => {
 //   res.status(400).send({ error: error.message })
+// })
+
+// router.get('/author/:id', async (req, res) => {
+//   const _id = req.params.id
+
+//   try {
+//     const author = await Author.findById(_id)
+
+//     if (!author) {
+//       res.status(404).send()
+//     }
+
+//     res.status(200).send(author)
+//   } catch (e) {
+//     res.status(500).send(e)
+//   }
 // })
 
 module.exports = router

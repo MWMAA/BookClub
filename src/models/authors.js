@@ -28,16 +28,15 @@ const authorSchema = new mongoose.Schema({
   },
   dateOfBirth: {
     type: Date
-  },
-  books: [{
-    ISBN: {
-      type: Number,
-      required: true,
-      ref: 'books' // connecting with books collection
-    }
-  }]
+  }
 }, {
   timestamps: true
+})
+
+authorSchema.virtual('books', {
+  ref: 'books',
+  localField: 'name',
+  foreignField: 'author',
 })
 
 const authors = mongoose.model('authors', authorSchema)

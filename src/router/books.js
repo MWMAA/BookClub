@@ -2,6 +2,7 @@ const express = require('express')
 const multer = require('multer')
 const sharp = require('sharp')
 const Book = require('../models/books')
+const auth = require('../middleware/auth')
 
 const router = express()
 
@@ -31,40 +32,46 @@ const bookFile = multer({
   }
 })
 
-router.get('/readbook/:id', async (req, res) => {
-  const _id = req.params.id
+router.post('/books', async (req, res) => {
   try {
-    const book = await Book.findById(_id)
+    const book = new Book({ ...req.body })
+    await book.save()
 
-    if (!book) {
-      res.status(404).send()
-    }
-
-    res.status(200).send(book)
+    res.status(201).send(book)
   } catch (e) {
     res.status(500).send(e)
   }
 })
 
-router.get('/readbooks', async (req, res) => {
+router.get('/books', async (req, res) => {
   try {
+    const sort = {}
+    const match = {}
+
+    if (req.body) {
+      Object.assign(match, req.body)
+    }
+
+    if (req.query.sortBy) {
+      const parts = req.query.sortBy.split(':')
+      sort[parts[0]] = parts[1] === 'desc' ? -1 : 1
+    }
+
+    const books = await Book.find(match,
+      {},
+      {
+        limit: parseInt(req.query.limit),
+        skip: parseInt(req.query.skip),
+        sort
+      })
+
     res.status(200).send(books)
   } catch (e) {
     res.status(500).send(e)
   }
 })
 
-router.post('/createBook', async (req, res) => {
-  try {
-    const book = new Book({ ...req.body })
-    await book.save()
-    res.status(200).send(book)
-  } catch (e) {
-    res.status(500).send(e)
-  }
-})
-
-router.patch('/editBook', async (req, res) => {
+router.patch('/books/:id', async (req, res) => {
   const _id = req.params.id
   const update = Object.keys(req.body)
   const allowedUpdats = [
@@ -93,13 +100,13 @@ router.patch('/editBook', async (req, res) => {
       return res.status(404).send()
     }
 
-    res.status(200).send(book)
+    res.status(202).send(book)
   } catch (e) {
     res.status(500).send(e)
   }
 })
 
-router.delete('/removeBook/:id', async (req, res) => {
+router.delete('/books/:id', async (req, res) => {
   const _id = req.params.id
 
   try {
@@ -115,13 +122,13 @@ router.delete('/removeBook/:id', async (req, res) => {
   }
 })
 
-router.post('/bookCoverUpload', avatar.single('bookCover'), async (req, res) => {
-  const buffer = await sharp(req.file.buffer).resize({ width: 250, height: 250 }).png().toBuffer()
-  req.avatar = buffer
-  res.status(200).send(req.avatar)
-}, (error, req, res, next) => {
-  res.status(400).send({ error: error.message })
-})
+// router.post('/bookCoverUpload', avatar.single('bookCover'), async (req, res) => {
+//   const buffer = await sharp(req.file.buffer).resize({ width: 250, height: 250 }).png().toBuffer()
+//   req.avatar = buffer
+//   res.status(200).send(req.avatar)
+// }, (error, req, res, next) => {
+//   res.status(400).send({ error: error.message })
+// })
 
 // router.post('/bookUpload', book.single('book'), async (req, res) => {
 //   const buffer = await sharp(req.file.buffer).toBuffer()
@@ -133,6 +140,21 @@ router.post('/bookCoverUpload', avatar.single('bookCover'), async (req, res) => 
 
 // router.get('/downloadBook', () => {
 
+// })
+
+// router.get('/books/:id', async (req, res) => {
+//   const _id = req.params.id
+//   try {
+//     const book = await Book.findById(_id)
+
+//     if (!book) {
+//       res.status(404).send()
+//     }
+
+//     res.status(200).send(book)
+//   } catch (e) {
+//     res.status(500).send(e)
+//   }
 // })
 
 module.exports = router

@@ -19,12 +19,12 @@ const avatar = multer({
   }
 })
 
-router.post('/createUser', async (req, res) => {
+router.post('/users', async (req, res) => {
   try {
     const user = new User({ ...req.body })
     const token = await user.generateAuthToken()
     await user.save()
-    res.status(200).send({ user, token })
+    res.status(201).send({ user, token })
   } catch (e) {
     res.status(500).send(e)
   }
@@ -34,11 +34,21 @@ router.post('/users/login', async (req, res) => {
   try {
     const user = await User.findByCredentials(req.body.email, req.body.password)
     const token = await user.generateAuthToken()
-    res.status(200).send({ user, token })
+    res.status(202).send({ user, token })
   } catch (e) {
     res.status(400).send(e)
   }
 })
+
+router.post('/userAvatarUpload', avatar.single('avatar'), async (req, res) => {
+  const buffer = await sharp(req.file.buffer).resize({ width: 250, height: 250 }).png().toBuffer()
+  req.avatar = buffer
+  // await req.user.save()
+  res.status(200).send(req.avatar)
+}, (error, req, res, next) => {
+  res.status(400).send({ error: error.message })
+})
+
 
 router.post('/users/logout', auth, async (req, res) => {
   try {
@@ -64,37 +74,41 @@ router.post('/users/logoutAll', auth, async (req, res) => {
   }
 })
 
-router.get('/readUser/:id', auth, async (req, res) => {
-  const _id = req.params.id
-  try {
-    const user = await User.findById(_id)
+router.get('/Users/me', auth, async (req, res) => {
+  res.status(206).send(req.user)
+})
 
-    if (!user) {
-      res.status(404).send()
+// GET/ tasks?limit=3&skip=3
+// GET/ tasks?sortBy=createdAt:asc
+router.get('/users', auth, async (req, res) => {
+  try {
+    const sort = {}
+    const match = {}
+
+    if (req.body) {
+      Object.assign(match, req.body)
     }
 
-    res.status(200).send(user)
+    if (req.query.sortBy) {
+      const parts = req.query.sortBy.split(':')
+      sort[parts[0]] = parts[1] === 'desc' ? -1 : 1
+    }
+
+    const users = await User.find(match,
+      {},
+      {
+        limit: parseInt(req.query.limit),
+        skip: parseInt(req.query.skip),
+        sort
+      })
+
+    res.status(200).send(users)
   } catch (e) {
     res.status(500).send(e)
   }
 })
 
-router.get('/Users/me', auth, async (req, res) => {
-  res.status(200).send(req.user)
-})
-
-router.get('/readUsers', async (req, res) => {
-  try {
-    const users = await User.find()
-
-    res.status(200)
-  } catch (e) {
-    res.status(500).send(e)
-  }
-})
-
-router.patch('/editUser/:id', async (req, res) => {
-  const _id = req.params.id
+router.patch('/users/me', auth, async (req, res) => {
   const updates = Object.keys(req.body)
   const allowedUpdats = [
     "name",
@@ -108,48 +122,42 @@ router.patch('/editUser/:id', async (req, res) => {
   ]
 
   const isValidOperation = updates.every((update) => allowedUpdats.includes(update))
-
   if (!isValidOperation) {
     return res.status(400).send({ error: "Invalid Updates!" })
   }
 
   try {
-    const user = await User.findById(_id)
-    updates.forEach((update) => user[update] = req.body[update])
-    await user.save()
+    updates.forEach((update) => req.user[update] = req.body[update])
+    await req.user.save()
 
-    if (!user) {
-      return res.status(404).send()
-    }
-
-    res.status(200).send(user)
+    res.status(202).send(req.user)
   } catch (e) {
     res.status(500).send(e)
   }
 })
 
-router.delete('/removeUser/:id', async (req, res) => {
-  const _id = req.params.id
+router.delete('/users/me', auth, async (req, res) => {
   try {
-    const user = await User.findByIdAndDelete(_id)
-
-    if (!user) {
-      res.status(404).send()
-    }
-
-    res.status(200).send(user)
+    await req.user.remove()
+    res.status(200).send(req.user)
   } catch (e) {
     res.status(500).send(e)
   }
 })
 
-router.post('/userAvatarUpload', avatar.single('avatar'), async (req, res) => {
-  const buffer = await sharp(req.file.buffer).resize({ width: 250, height: 250 }).png().toBuffer()
-  req.avatar = buffer
-  // await req.user.save()
-  res.status(200).send(req.avatar)
-}, (error, req, res, next) => {
-  res.status(400).send({ error: error.message })
-})
+// router.get('/users/:id', auth, async (req, res) => {
+//   const _id = req.params.id
+//   try {
+//     const user = await User.findById(_id)
+
+//     if (!user) {
+//       res.status(404).send()
+//     }
+
+//     res.status(200).send(user)
+//   } catch (e) {
+//     res.status(500).send(e)
+//   }
+// })
 
 module.exports = router
